@@ -1,0 +1,37 @@
+{% extends 'base.html'%}
+
+{% block body %}
+
+<form action="" method="POST">{% csrf_token %}
+  <div class="mb-3">
+    <label for="name" class="form-label"> नाव </label>
+    <input type="text" class="form-control" id="name" name="name" required>
+  </div>
+
+  <div class="mb-3">
+
+   <select class="form-control" required  name="address_id">
+    {% for v in village %}
+    <option value="">गाव निवडा </option>
+    <option value="{{v.id}}">{{v.name}}</option>
+    {% endfor %}
+   </select>
+
+    
+  </div>
+
+
+  <div class="mb-3">
+   <label for="Mobile" class="form-label">मोबाईल नंबर </label>
+
+    <input type="number" class="form-control" id="mobile" name="mobile" required>
+  </div>
+ <br>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+    <div>
+    </div>
+     </div>
+
+{% endblock %}

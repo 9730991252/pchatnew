@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+
+{% block body %}
+<div class="container my-5 jumbotron text-center">
+    <h6>welcome to group</h6>
+    <form action="" method="POST">{% csrf_token %}
+      <div class="border">
+  
+          <input type="number" name="number" placeholder="Enter Your Mobile" required/><br><br>
+          <button type="submit" class="btn btn-primary" id= "btnadd"> Login </button>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}

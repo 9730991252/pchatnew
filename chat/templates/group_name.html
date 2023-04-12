@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <title>welcome chat room </title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+<style>
+  *{
+    margin: 0px;
+    padding: 0px;
+  }
+
+  #head{
+    padding-top: 5px;
+    position: fixed;
+    top: 0px;
+    text-align: center;
+    
+    background-color: rgb(204, 255, 186);
+  }
+#chat_messsage_input{
+
+  position: fixed;
+  bottom: 30px;
+
+}
+#chat_messsage_submit{
+  background-color: green;
+  color: aliceblue;
+  position: fixed;
+  bottom: 1px;
+  width: 100px;
+  height: 30px;
+
+}
+
+#p_name_style{
+  text-align: left;
+  padding-top: 10px;
+  padding-left: 5px;
+  
+}
+
+
+#msg_style{
+  padding-left: 5px;
+  padding-bottom: 25px;
+  
+}
+
+#msg_box_style{
+  background-color: rgb(255, 255, 255);
+}
+
+#box{
+  background-color: rgb(219, 219, 219);
+  padding-top: 60px;
+  padding-bottom: 60px;
+
+}
+</style>
+
+  </head>
+  <body >
+    
+    <!-- Example Code -->
+    <div class="container" id="head" >
+      
+    <h5>{% if data.ssc_year != None  %}  {{data.ssc_year}} {% endif %} {{data.g_name}}  गटामध्ये तुमचे हार्दिक स्वागत  </h5>
+    <h5><i class="fa-solid fa-user"></i> Mr. {{data.participant_name}},<a href="/group/{{data.village_id}}"> {{data.participant_address}}  <h6>तुमच्या गावाच्या गटासाठी येथे दाबा </h6></a></h5>
+    <h6 hidden id="participant_id">{{data.participant_id}}</h6>
+    <h6 hidden id="participant_name">{{data.participant_name}}</h6>
+    
+  </div>
+
+  <div class="container border border-primary mb-5" id="box">
+
+    {% for chat in chat %}
+    <div id="msg_box_style">
+    <h6 id="p_name_style"><i class="fa-solid fa-user"></i> {{chat.participant.name}} :- {{chat.participant.address}} :- {{chat.added_date}}</h6>
+   <p id="msg_style">{{chat.msg}}</p>
+  </div>
+    {% endfor %}
+    <h6>today</h6>
+<div id="chat_box"></div>
+
+</div>
+
+
+  <div class="container">
+
+  {{groupname|json_script:"group-name"}}
+        <input type="text" id="chat_messsage_input" size="100" required><br>
+    <input type="button" value="Send" id="chat_messsage_submit">
+    
+
+  </div>
+    <!-- End Example Code -->
+<script>
+    
+    const groupName =JSON.parse(document.getElementById
+    ('group-name').textContent)
+    console.log(groupName)
+    p_id=JSON.parse(document.getElementById('participant_id').textContent)
+    p_name=document.getElementById('participant_name').innerHTML
+    
+    
+    var ws = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/ac/'
+        + groupName
+        +'/'
+        )
+    ws.onopen = function(){
+        console.log('open..')
+        //ws.send('hi from clint')
+    }
+    ws.onmessage = function(event){
+        //console.log('onmessage..',event.data)
+        const data = JSON.parse(event.data)
+        console.log(typeof(data))
+        temp=`<div class="container shadow" style="background-color: rgb(255, 255, 255);"><h6><i class="fa-solid fa-user"></i> ${data.p_name}<h6>${data.msg}</h4></div>`
+        document.getElementById('chat_box').innerHTML += temp;
+        
+        
+        
+    }
+    ws.onerror = function(event){
+        console.log('errr..',event)
+
+    }
+
+
+    ws.onclose = function(event){
+        console.log('close..',event)
+
+    }
+
+    document.getElementById('chat_messsage_submit').onclick=
+    function(event){
+      const messageInputDom=document.getElementById('chat_messsage_input')
+      const message = messageInputDom.value
+      if(message==""){
+        alert('कृपया संदेश लिहा ')
+
+      }
+      else{
+        
+      ws.send(JSON.stringify({
+        'msg':message,
+        'p_id':p_id,
+        'p_name':p_name
+        
+      }))
+      }
+      window.scrollBy(0,1000);
+      messageInputDom.value = ''
+    }
+</script>
+
+
+  </body>
+</html>
